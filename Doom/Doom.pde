@@ -1,9 +1,7 @@
 import ddf.minim.*;
 Minim minim;
 
- AudioPlayer mainSong, handgunSound, shotgunSound, finishHim, fatality;
- 
-//Global Variables
+AudioPlayer mainSong, handgunSound, shotgunSound, finishHim, fatality;
  
 //Global Variables
  
