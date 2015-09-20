@@ -1,7 +1,7 @@
 import ddf.minim.*;
 Minim minim;
 
- AudioPlayer mainSong, handgunSound, shotgunSound;
+ AudioPlayer mainSong, handgunSound, shotgunSound, finishHim, fatality;
  
 //Global Variables
  
@@ -177,6 +177,13 @@ void setup(){
   
   shotgunSound = minim.loadFile("Audio/Sound Effects/shotgun.wav");
   shotgunSound.setGain(14);
+  
+  finishHim = minim.loadFile("Audio/Sound Effects/finish him.mp3");
+  finishHim.setGain(14);
+  finishHim.play();
+  
+  fatality = minim.loadFile("Audio/Sound Effects/fatality.mp3");
+  fatality.setGain(14);
   
 
 }
@@ -454,6 +461,7 @@ void setup(){
     enemy(enemyDead[6]);
     positionX = positionX + 0; //Stop enemy
     positionZ = positionZ + 0;
+    fatality.play();
   }
 
   //  CHANGE Speed in X, z based on PLANE
