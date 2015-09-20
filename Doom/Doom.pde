@@ -69,7 +69,7 @@ Minim minim;
   int moveMode = 2;
   
   //EnemyLife
-  int enemyLife = 0;
+  float enemyLife = 6;
   
   /************************* Textures  **********************/
   PImage[] enemyMove = new PImage[8];
@@ -435,28 +435,31 @@ void setup(){
   pushMatrix();  
   translate (positionX, height/2 - 100, -positionZ);   //MOVE NPC
   
-  //Create NPC
-  //enemy(enemyMove[(actualFrame)]);
+  //Create  y  Muerte de Enemy
   if(enemyLife!=0){
+    //  UPDATE Position in X, Z
+    positionX = positionX + (speedX * xDirection); 
+    positionZ = positionZ + (speedZ * zDirection);    
+   
     if(changeTexture==true){
-      enemy(enemyDead[0]);  
+      enemy(enemyDead[0]); 
+      enemyLife=enemyLife-0.5;
     }
     if(changeTexture==false){
       enemy(enemyMove[0]);
     }    
   }
-  else {enemy(enemyDead[6]);}
-  //  UPDATE Position in X, Z
-/*
-  positionX = positionX + (speedX * xDirection); 
-  positionZ = positionZ + (speedZ * zDirection);
-*/
-  
+  else {
+    enemy(enemyDead[6]);
+    positionX = positionX + 0; //Stop enemy
+    positionZ = positionZ + 0;
+  }
+
   //  CHANGE Speed in X, z based on PLANE
   if (positionX > FloorSize || positionZ>-FloorSize)
   {
-    speedX = random(5, 10);
-    speedZ = random(5, 10);    
+    speedX = random(2, 8);
+    speedZ = random(2, 8);    
   }
   
   //  CHANGE DIRECTION
