@@ -421,6 +421,7 @@ void setup(){
   {
       beginShape();
       translate(0,0,0); // *******RE LOCATE Matrix in Center, primary Y
+      rotateY(-angle);  //Gira a donde se mueva la camara
       texture(textura); //asignar textura
       textureWrap(CLAMP);
       vertex(-100, -200, 0, 0, 0); 
@@ -708,8 +709,8 @@ public void cameraUpdate(){
       //println("zC:    " + zComp);
       //println("NewZC: " + newZComp);
       //println("Angle: " +angle);*/
-      println("X: " +x);
-      println("Y: " +z);
+      //println("X: " +xComp);
+      //println("Y: " +angle);
       //--------------------------------------*/
         
     }
@@ -878,8 +879,8 @@ boolean isCollidingCircleRectangle(
       float rectangleHeight  //sizeY    
         )
 {
-    float positionAimX = abs(lookX - rectangleX - 100/2);
-    float positionAimZ = abs(lookY - rectangleY - 300/2);
+    float positionAimX = abs(lookX - rectangleX);
+    float positionAimZ = abs(lookY - rectangleY);
  
     if (positionAimX > (100/2 + aimRadius)) { return false; }
     if (positionAimZ > (1000)) { return false; }
