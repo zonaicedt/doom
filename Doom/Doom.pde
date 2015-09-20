@@ -68,12 +68,13 @@ Minim minim;
   int cameraMode = 1;
   int moveMode = 2;
   
+  //EnemyLife
+  int enemyLife = 0;
+  
   /************************* Textures  **********************/
-  int actualFrameWeapon = 0;
-  int numFramesWeapon = 2;
-  PImage[] enemyMove = new PImage[numFrames];
-  PImage[] handGun = new PImage[numFramesWeapon];
-
+  PImage[] enemyMove = new PImage[8];
+  PImage[] enemyDead = new PImage[7];
+  
   PImage[] handGunAnimations = new PImage[8];
   PImage[] shotGunAnimations = new PImage[11];
   
@@ -96,21 +97,30 @@ Minim minim;
   float thisShoot = 0.0f;
   boolean isShooting = false;
   int shootingAnimation = 0;
- 
+  boolean shot, changeTexture;
+  
 void setup(){
   size(800,600,P3D);
   noStroke();
   
   //************************************************ START load texture 
-  enemyMove[0] = loadImage("enemy/enemy-02.png");
-  enemyMove[1] = loadImage("enemy/enemy-03.png");
-  enemyMove[2] = loadImage("enemy/enemy-04.png");
-  enemyMove[3] = loadImage("enemy/enemy-05.png");
-  enemyMove[4] = loadImage("enemy/enemy-06.png");
-  enemyMove[5] = loadImage("enemy/enemy-07.png");
-  enemyMove[6] = loadImage("enemy/enemy-08.png");
-  enemyMove[7] = loadImage("enemy/enemy-09.png");
-
+  enemyMove[0] = loadImage("enemy/enemy-01.png");
+  enemyMove[1] = loadImage("enemy/enemy-02.png");
+  enemyMove[2] = loadImage("enemy/enemy-03.png");
+  enemyMove[3] = loadImage("enemy/enemy-04.png");
+  enemyMove[4] = loadImage("enemy/enemy-05.png");
+  enemyMove[5] = loadImage("enemy/enemy-06.png");
+  enemyMove[6] = loadImage("enemy/enemy-07.png");
+  enemyMove[7] = loadImage("enemy/enemy-08.png");
+  
+  enemyDead[0] = loadImage("enemy/muerte-1.png");
+  enemyDead[1] = loadImage("enemy/muerte-2.png");
+  enemyDead[2] = loadImage("enemy/muerte-3.png");
+  enemyDead[3] = loadImage("enemy/muerte-4.png");
+  enemyDead[4] = loadImage("enemy/muerte-5.png");
+  enemyDead[5] = loadImage("enemy/muerte-6.png");
+  enemyDead[6] = loadImage("enemy/muerte-7.png");
+  
   Floor = loadImage("rockFloor.jpg");
   brownWalls = loadImage("Walls.png");
   bigWalls = loadImage("Big wall.jpg");
@@ -160,7 +170,7 @@ void setup(){
   /* OST */
   
   minim = new Minim(this);
-  mainSong = minim.loadFile("Audio/Music/main.wav");
+  mainSong = minim.loadFile("Audio/Music/main.mp3");
   mainSong.loop();
   handgunSound = minim.loadFile("Audio/Sound Effects/handgun.wav");
   handgunSound.setGain(14);
@@ -214,15 +224,16 @@ void setup(){
       
       if(isShooting && thisWeapon == 0 && thisShoot < 6){
         thisShoot += 0.2;
+        shot=true;
       }
       
       if(thisWeapon == 0 && thisShoot >= 6){
         thisShoot = 0;
-        isShooting = false;
+        isShooting = false;        
       }
       
         if(isShooting && thisWeapon == 1 && thisShoot < 6){
-        thisShoot += 0.15;
+        thisShoot += 0.15;       
       }
       
       
@@ -234,6 +245,7 @@ void setup(){
       if(thisWeapon == 1 && thisShoot >= 10){
         thisShoot = 0;
         isShooting = false;
+        shot=false;
       }
    
  }
@@ -425,21 +437,26 @@ void setup(){
   
   //Create NPC
   //enemy(enemyMove[(actualFrame)]);
-     
-    enemy(enemyMove[(actualFrame)]);
-  
-  //  CHANGE FRAME
-  actualFrame = (actualFrame+1) % numFrames; //% numFrames cicla los frmaes 
-  
+  if(enemyLife!=0){
+    if(changeTexture==true){
+      enemy(enemyDead[0]);  
+    }
+    if(changeTexture==false){
+      enemy(enemyMove[0]);
+    }    
+  }
+  else {enemy(enemyDead[6]);}
   //  UPDATE Position in X, Z
+/*
   positionX = positionX + (speedX * xDirection); 
   positionZ = positionZ + (speedZ * zDirection);
+*/
   
   //  CHANGE Speed in X, z based on PLANE
   if (positionX > FloorSize || positionZ>-FloorSize)
   {
-    speedX = random(5, 20);
-    speedZ = random(5, 20);    
+    speedX = random(5, 10);
+    speedZ = random(5, 10);    
   }
   
   //  CHANGE DIRECTION
@@ -618,7 +635,7 @@ void draw(){
       spotLight(255,255,255,width/2,height/2-1000,0,width/2,height/2,0,PI,1);
     else if(spotLightMode == 4)
       
-     cameraUpdate();
+    cameraUpdate();
     locationUpdate();
     jumpManager(10);
     
@@ -644,24 +661,16 @@ void draw(){
 
 //****************************************************************** END  NPC 1
 
-  /* 
-   // ______COLISION ENTRE NPC________
-   if(positionX<positionX2+100)
-  {
-    if(positionX>positionX2-100)
-    {
-      if(positionZ<positionZ2+10)
-      {
-        if(positionZ>positionZ2-10)
-        {
-          println("CHOCARON!!");
-          xDirection*=-1; xDirection2*=-1;
-          zDirection*=-1; zDirection2*=-1;
-        }
-      }      
-    }
-  }
-*/  
+  //  DISPARO COLISION  
+     
+     boolean collisionDetected = isCollidingCircleRectangle(rotateX, rotateZ, centerBox, positionX, -positionZ, 100, 300); //////////////////////////////////////////////////
+     if (collisionDetected == true) { println("IMPACTA!!"); 
+         if(shot==true){ changeTexture=true;}
+     }
+     else { println("No impacta"); shot=false; changeTexture=false;}
+     
+  
+
 }//   fin de DRAW
  
 public void cameraUpdate(){
@@ -831,15 +840,18 @@ void mousePressed(){
         handgunSound.loop();
         handgunSound.play();
         isShooting = true;
+        shot=true;
       }
        if(thisWeapon == 1){
-         //shotgunSound.loop();
-         //shotgunSound.play();
+         shotgunSound.loop();
+         shotgunSound.play();
         isShooting = true;
+        shot=true;
       }
     }
   }
 }
+
  
 public float correctAngle(float xc, float zc){
   float newAngle = -degrees(atan(xc/zc));
@@ -850,4 +862,30 @@ public float correctAngle(float xc, float zc){
   else if (xComp < 0 && zComp < 0)
     newAngle = (90+ newAngle) + 270;
   return newAngle;
+}
+
+ 
+boolean isCollidingCircleRectangle(
+      float lookX, //aim
+      float lookY,  //aim
+      float aimRadius,  //aimRadius
+      float rectangleX,  //positionX
+      float rectangleY,  //positionZ
+      float rectangleWidth,  //sizeW
+      float rectangleHeight  //sizeY    
+        )
+{
+    float positionAimX = abs(lookX - rectangleX - 100/2);
+    float positionAimZ = abs(lookY - rectangleY - 300/2);
+ 
+    if (positionAimX > (100/2 + aimRadius)) { return false; }
+    if (positionAimZ > (1000)) { return false; }
+ 
+    if (positionAimX <= (100/2)) { return true; }
+    if (positionAimZ <= (100)) { return true; }
+ 
+    float cornerDistance_sq = pow(positionAimX - rectangleWidth/2, 2) +
+                         pow(positionAimZ - rectangleHeight/2, 2);
+ 
+    return (cornerDistance_sq <= pow(centerBox,2));
 }
