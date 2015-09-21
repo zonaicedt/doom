@@ -1,7 +1,7 @@
 import ddf.minim.*;
 Minim minim;
 
- AudioPlayer mainSong, handgunSound, shotgunSound, openDoor, doorClosed, enemyInjured, enemyDeath, finishHIM, fatality;
+ public AudioPlayer mainSong, handgunSound, shotgunSound, openDoor, doorClosed, finishHIM, enemyInjured, enemyDeath, fatality;
  
 //Global Variables
  
@@ -53,7 +53,7 @@ Minim minim;
   int standHeight = 100;
   int movementSpeed = 50;    //Bigger number = slower
   float sensitivity = 15;      //Bigger number = slower
-  int centerBox = 40;        /* This used mainly for mouse smoothness. Creates a virtual invisible box, when the mouse leaves it, the rotation begins */
+  int centerBox = 80;        /* This used mainly for mouse smoothness. Creates a virtual invisible box, when the mouse leaves it, the rotation begins */
   float camBuffer = 10;
   int cameraDistance = 1000;  //distance from camera to camera target in lookmode... 8?
   
@@ -69,8 +69,7 @@ Minim minim;
   /************************* Textures  **********************/
   int actualFrameWeapon = 0;
   int numFramesWeapon = 2;
-  PImage[] enemyMove = new PImage[numFrames];
-  PImage[] enemyDead = new PImage[7];
+
     //EnemyLife
   float enemyLife = 6;
 
@@ -97,7 +96,7 @@ Minim minim;
   boolean isGoingUp = false;
   PImage[][] actualWeapon;
   PImage shotGun;
-  int thisWeapon = 0;
+  public int thisWeapon = 0;
   float thisShoot = 0.0f;
   boolean isShooting = false;
   int shootingAnimation = 0;
@@ -118,12 +117,20 @@ Minim minim;
   /* Enemy Animations */
   boolean isenemyInjured = false;
   float hurtEnemyTexture = 0.0f;
-  boolean isDestroyed = false;
   
   float animation = 0.0f; 
+  
+  /* Enemy TYPE 2 */
+  ArrayList<EnemyTypeTwo> demonEnemy = new ArrayList<EnemyTypeTwo>();
+
+  public static PImage[] demon = new PImage[3];
+  public static PImage[] demonBack = new PImage[3];
+
+  public static PImage[] enemyMove = new PImage[7];
+  public static PImage[] enemyDead = new PImage[7];
  
 void setup(){
-  size(800,600,P3D);
+  size(1024,720,P3D);
   noStroke();
   noCursor();
   //************************************************ START load texture 
@@ -142,6 +149,15 @@ void setup(){
   enemyDead[4] = loadImage("enemy/muerte-5.png");
   enemyDead[5] = loadImage("enemy/muerte-6.png");
   enemyDead[6] = loadImage("enemy/muerte-7.png");
+  
+  demon[0] = loadImage("enemy/enemy-11.png");
+  demon[1] = loadImage("enemy/enemy-12.png");
+  demon[2] = loadImage("enemy/enemy-13.png");
+  
+  demonBack[0] = loadImage("enemy/enemy-09.png");
+  demonBack[1] = loadImage("enemy/enemy-14.png");
+  demonBack[2] = loadImage("enemy/enemy-15.png");
+
 
   Floor = loadImage("rockFloor.jpg");
   brownWalls = loadImage("Walls.png");
@@ -227,6 +243,13 @@ void setup(){
   fatality.setGain(14);
   
   finishHIM.play();
+  
+  demonEnemy.add(new EnemyTypeTwo(800, -700, 6, 0, 0));
+  demonEnemy.add(new EnemyTypeTwo(5400, 2550, 6, 2100, 3200));
+  demonEnemy.add(new EnemyTypeTwo(8700, 5700, 6, 1300, 6000));
+  demonEnemy.add(new EnemyTypeTwo(8700, 5650, 6, -1900, 5650));
+  demonEnemy.add(new EnemyTypeTwo(8700, 5650, 6, -1900, 5650));
+  /*demonEnemy.add(new EnemyTypeTwo(300, -700, 6, 0, 0));*/
 }
  
    void weapon()
@@ -279,8 +302,11 @@ void setup(){
         isShooting = false;
       }
       
-      if(thisWeapon == 0 && thisShoot >= 2 && thisShoot < 3)
+      if(thisWeapon == 0 && thisShoot >= 2 && thisShoot < 3){
         shot = true;
+        for(EnemyTypeTwo daemon : demonEnemy)
+          daemon.shot = true;
+      }
       
         if(isShooting && thisWeapon == 1 && thisShoot < 6){
         thisShoot += 0.15;
@@ -297,8 +323,11 @@ void setup(){
         isShooting = false;
       }
       
-      if(thisWeapon == 1 && thisShoot >= 1 && thisShoot < 2)
+      if(thisWeapon == 1 && thisShoot >= 1 && thisShoot < 2){
         shot = true;
+        for(EnemyTypeTwo daemon : demonEnemy)
+          daemon.shot = true;
+      }
    
  }
  void HUD()
@@ -441,6 +470,7 @@ void setup(){
       vertex(FloorSize, -512, FloorSize, bigWalls.width, bigWalls.height);
       vertex(FloorSize, -512, -FloorSize, 0,bigWalls.height);
       endShape();
+      
      beginShape();
       texture(bigWalls);
       vertex(-FloorSize, 0, -FloorSize,0,0); 
@@ -449,7 +479,7 @@ void setup(){
       vertex(-FloorSize, -512, -FloorSize, 0,bigWalls.height);
       endShape();
       
-            beginShape();
+       beginShape();
       texture(bigWalls);
       translate(FloorSize,0,0);
       vertex(-FloorSize/2 , 0, FloorSize,0,0); 
@@ -458,7 +488,7 @@ void setup(){
       vertex(-FloorSize/2 , -512, FloorSize, 0,bigWalls.height);
       endShape();
       
-      /* RIGHT EXTENDED WALL */
+      /* RIGHT EXTENDED WALL ****/
       beginShape();
       texture(bigWalls);
       translate(- 3 * FloorSize,0,0);
@@ -481,14 +511,14 @@ void setup(){
       
       /* BASE LEFT WALL */
       pushMatrix();
-      translate(FloorSize/2,height/2, 4.5 * FloorSize);
+      translate(FloorSize/2,height/2, 6 * FloorSize);
       
       beginShape();
       texture(bigWalls);
-      vertex(FloorSize, 0, -FloorSize,0,0); 
-      vertex(FloorSize, 0,  FloorSize, bigWalls.width,0);
-      vertex(FloorSize, -512, FloorSize, bigWalls.width, bigWalls.height);
-      vertex(FloorSize, -512, -FloorSize, 0,bigWalls.height);
+      vertex(FloorSize/2, 0, -FloorSize,0,0); 
+      vertex(FloorSize/2, 0,  FloorSize, bigWalls.width,0);
+      vertex(FloorSize/2, -512, FloorSize, bigWalls.width, bigWalls.height);
+      vertex(FloorSize/2, -512, -FloorSize, 0,bigWalls.height);
       endShape();
      beginShape();
      popMatrix();
@@ -505,7 +535,7 @@ void setup(){
       endShape();
       popMatrix();
       
-      /* BACK WALL */
+      /* BACK WALL ********/
       pushMatrix();
       beginShape();
       translate(FloorSize/2,height/2, 4.5 * FloorSize);
@@ -531,7 +561,7 @@ void setup(){
       popMatrix();
       
       
-       /* BACK WALL EXTENDED */
+       /* BACK WALL EXTENDED *****/
       pushMatrix();
       beginShape();
       translate(-1.5 * FloorSize,height/2, 4.5 * FloorSize);
@@ -772,7 +802,7 @@ void setup(){
    void enemy(){
     //**********************************************************  NPC  1
   pushMatrix();  
-  translate (positionX, height/2 - 100, -positionZ);   //MOVE NPC
+  translate (positionX, height/2 - 120, -positionZ);   //MOVE NPC
   
   //Create  y  Muerte de Enemy
   if(enemyLife > 0){
@@ -1015,13 +1045,8 @@ public void cameraUpdate(){
      
       /*println("rotateX:    " + rotateX);
       println("rotateZ:    " + rotateZ);*/
-      //println("xC:    " + xComp);
-      //println("NewXC: " + newXComp);
-      //println("zC:    " + zComp);
-      //println("NewZC: " + newZComp);
-      //println("Angle: " +angle);
-      /*println("X: " +x);
-      println("Z: " +z);*/
+      println("X: " +x);
+      println("Z: " +z);
         
     }
     
@@ -1174,12 +1199,18 @@ void mousePressed(){
       }
       
              //  DISPARO COLISION  
-       
        boolean collisionDetected = isCollidingBulletEnemy(rotateX, rotateZ, centerBox, positionX, -positionZ, 100, 300); //////////////////////////////////////////////////
        if (collisionDetected == true) {  
            if(shot == true){ println("IMPACTA");changeTexture = true;}
        }
        else {shot=false; changeTexture=false;}
+       
+       for(EnemyTypeTwo daemon : demonEnemy){
+         if(daemon.isCollidingBulletEnemy(rotateX, rotateZ, centerBox, daemon.getPositionX(), 0, 100, 300)){
+           if(daemon.shot == true){daemon.setTexture(true);}
+           else { daemon.shot = false; daemon.setTexture(false);}
+         }
+       }
     }
   }
 }
@@ -1225,17 +1256,8 @@ void draw(){
    background(117,98,74);
 
    hint(ENABLE_DEPTH_TEST);
-    if(spotLightMode == 0)
-      lights();
-    else if(spotLightMode == 1)
-      spotLight(255,255,255,x,y-standHeight,z,rotateX,0,rotateZ,PI,1);
-    else if(spotLightMode == 2)
-      spotLight(255,255,255,x,y-standHeight-200,z,x+100,y+100,z,frameCounter/10,1);
-    else if(spotLightMode == 3)
-      spotLight(255,255,255,width/2,height/2-1000,0,width/2,height/2,0,PI,1);
-    else if(spotLightMode == 4)
       
-     cameraUpdate();
+    cameraUpdate();
     locationUpdate();
     jumpManager(10);
     
@@ -1250,6 +1272,11 @@ void draw(){
       pushMatrix();
        enemy();
        popMatrix();
+       for(EnemyTypeTwo daemon : demonEnemy){
+         pushMatrix();
+           daemon.movement();
+         popMatrix();
+       }
      //weapon and HUD 
      pushMatrix();
        camera();
@@ -1258,5 +1285,4 @@ void draw(){
        image(doomHUD, 0, height-100); 
      popMatrix();
      
-
 }
