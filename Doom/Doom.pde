@@ -470,7 +470,6 @@ void setup(){
       vertex(FloorSize, -512, FloorSize, bigWalls.width, bigWalls.height);
       vertex(FloorSize, -512, -FloorSize, 0,bigWalls.height);
       endShape();
-      
      beginShape();
       texture(bigWalls);
       vertex(-FloorSize, 0, -FloorSize,0,0); 
@@ -479,7 +478,7 @@ void setup(){
       vertex(-FloorSize, -512, -FloorSize, 0,bigWalls.height);
       endShape();
       
-       beginShape();
+            beginShape();
       texture(bigWalls);
       translate(FloorSize,0,0);
       vertex(-FloorSize/2 , 0, FloorSize,0,0); 
@@ -488,7 +487,7 @@ void setup(){
       vertex(-FloorSize/2 , -512, FloorSize, 0,bigWalls.height);
       endShape();
       
-      /* RIGHT EXTENDED WALL ****/
+      /* RIGHT EXTENDED WALL */
       beginShape();
       texture(bigWalls);
       translate(- 3 * FloorSize,0,0);
@@ -511,21 +510,21 @@ void setup(){
       
       /* BASE LEFT WALL */
       pushMatrix();
-      translate(FloorSize/2,height/2, 6 * FloorSize);
+      translate(FloorSize/2,height/2, 4.5 * FloorSize);
       
       beginShape();
       texture(bigWalls);
-      vertex(FloorSize/2, 0, -FloorSize,0,0); 
-      vertex(FloorSize/2, 0,  FloorSize, bigWalls.width,0);
-      vertex(FloorSize/2, -512, FloorSize, bigWalls.width, bigWalls.height);
-      vertex(FloorSize/2, -512, -FloorSize, 0,bigWalls.height);
+      vertex(FloorSize, 0, -FloorSize,0,0); 
+      vertex(FloorSize, 0,  FloorSize, bigWalls.width,0);
+      vertex(FloorSize, -512, FloorSize, bigWalls.width, bigWalls.height);
+      vertex(FloorSize, -512, -FloorSize, 0,bigWalls.height);
       endShape();
      beginShape();
      popMatrix();
      
      /* LEFT WALL */
       pushMatrix();
-      translate(FloorSize/2,height/2, 4.5 * FloorSize);
+      translate(FloorSize/2,height/2, 7 * FloorSize);
       beginShape();
       texture(bigWalls);
       vertex(FloorSize/2, 0, -FloorSize,0,0); 
@@ -535,7 +534,7 @@ void setup(){
       endShape();
       popMatrix();
       
-      /* BACK WALL ********/
+      /* BACK WALL */
       pushMatrix();
       beginShape();
       translate(FloorSize/2,height/2, 4.5 * FloorSize);
@@ -561,7 +560,7 @@ void setup(){
       popMatrix();
       
       
-       /* BACK WALL EXTENDED *****/
+       /* BACK WALL EXTENDED */
       pushMatrix();
       beginShape();
       translate(-1.5 * FloorSize,height/2, 4.5 * FloorSize);
@@ -693,7 +692,7 @@ void setup(){
       popMatrix();
       
                 pushMatrix();
-      translate(-3 * FloorSize,height/2, 6 * FloorSize);
+      translate(-3 * FloorSize,height/2, 4.5 * FloorSize);
       beginShape();
       texture(bigWalls);
       vertex(FloorSize/2, 0, -FloorSize,0,0); 
