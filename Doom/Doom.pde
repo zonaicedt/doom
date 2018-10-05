@@ -150,13 +150,13 @@ void setup(){
   enemyDead[5] = loadImage("enemy/muerte-6.png");
   enemyDead[6] = loadImage("enemy/muerte-7.png");
   
-  demon[0] = loadImage("enemy/enemy-11.png");
-  demon[1] = loadImage("enemy/enemy-12.png");
-  demon[2] = loadImage("enemy/enemy-13.png");
+  demon[0] = loadImage("enemy/enemy-01.png");
+  demon[1] = loadImage("enemy/enemy-02.png");
+  demon[2] = loadImage("enemy/enemy-05.png");
   
   demonBack[0] = loadImage("enemy/enemy-09.png");
-  demonBack[1] = loadImage("enemy/enemy-14.png");
-  demonBack[2] = loadImage("enemy/enemy-15.png");
+  demonBack[1] = loadImage("enemy/enemy-10.png");
+  demonBack[2] = loadImage("enemy/enemy-11.png");
 
 
   Floor = loadImage("rockFloor.jpg");

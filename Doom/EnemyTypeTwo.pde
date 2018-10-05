@@ -53,6 +53,7 @@ class EnemyTypeTwo{
     
     /* Enemy Idle */
     if(changeTexture==false && this.hurtEnemyTexture <= 0){
+      System.out.println("Here");
       pushMatrix();
         beginShape();
         translate (this.positionX, height/2 - 120, this.positionZ);   //MOVE NPC
@@ -168,4 +169,3 @@ private void enemy(PImage textura){
   }
 
 }
-
